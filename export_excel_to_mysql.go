@@ -43,30 +43,29 @@ func main() {
                 cell.Value = cols[i]
         }   
         buff := make([]interface{}, len(cols)) 
-        data := make([]string, len(cols))  
+        data := make([]sql.RawBytes, len(cols))  
         for i, _ := range buff {
              buff[i] = &data[i]  
         }
         for rows.Next() {
                 row = sheet.AddRow()
-                rows.Scan(buff...)
-                
-                for _, col := range data {
-                   cell = row.AddCell()
-                   cell.Value = col
-                }
+                rows.Scan(buff...)            
+                if col==nil{
+                          cell = row.AddCell()
+                       // cell.Value ="zyx"
+                      } else {
+                      cell = row.AddCell()
+                      cell.Value = string(col)
+                    }
+         }
                 if err != nil {
                         log.Fatal(err)
                 }
-
-
-        }
-
+        
         err = rows.Err()
         if err != nil {
                 log.Fatal(err)
         }
-
         err = file.Save("out.xlsx")
         if err != nil {
                 log.Printf(err.Error())
